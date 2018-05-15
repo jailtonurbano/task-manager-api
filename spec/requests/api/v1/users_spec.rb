@@ -4,7 +4,7 @@ RSpec.describe 'Users API', type: :request do
     let!(:user) { create(:user) }
     let(:user_id) { user.id }
 
-    before { host! 'api.taskmanager.dev'}
+    before { host! 'api.task-manager.test'}
     describe 'GET /users/:id' do
         before do
             headers = { 'Accept' => 'application/vnd.taskmanager.v1'}
@@ -32,4 +32,28 @@ RSpec.describe 'Users API', type: :request do
 
 
     end
+
+    describe 'POST /users' do 
+        before do
+            headers = { 'Accept' => 'application/vnd.task-manager.v1'}
+            post '/users', params: { user: user_params }, headers: headers
+        end 
+        context 'when the request params are valid' do
+            let(:user_params) { attributes_for(:user) }
+
+            it 'return status code 201' do
+                expect(response).to have_http_status(201)
+            end
+
+            it 'return json data for the create user' do
+                user_response = JSON.parse(response.body)
+                expect(user_response['email']).to eq(user_params[:email])
+            end
+        end
+
+        context 'when the request params are invalid' do
+        
+        end
+    end
+
 end
