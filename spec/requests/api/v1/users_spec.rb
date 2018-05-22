@@ -34,7 +34,7 @@ RSpec.describe 'Users API', type: :request do
     end
 
     describe 'POST /users' do 
-                before do
+         before do
             headers = { 'Accept' => 'application/vnd.task-manager.v1'}
             post '/users', params: { user: user_params }, headers: headers
         end 
@@ -98,4 +98,18 @@ RSpec.describe 'Users API', type: :request do
         end
     end
 
+    describe 'DELETE /users/:id' do
+        before do
+            headers = { 'Accept' => 'application/vnd.task-manager.v1'}
+            delete "/users/#{user_id}", params: { }, headers: headers
+        end
+
+        it 'returns status code 204' do
+          expect(response)  .to have_http_status(204)
+        end
+
+        it 'removes the user from database' do
+            expect( User.find_by(id: user.id)).to be_nil
+        end
+    end
 end
